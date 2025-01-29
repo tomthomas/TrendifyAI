@@ -2,7 +2,7 @@ import os
 import requests
 import pandas as pd
 
-API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-xxl"
+API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-small"
 HEADERS = {"Authorization": f"Bearer {os.environ['HF_TOKEN']}"}
 
 def generate_insights(prompt):
