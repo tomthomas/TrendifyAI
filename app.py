@@ -30,6 +30,7 @@ def main():
             return
     
     if uploaded_file and data is not None:
+        st.write("✅ Debug: Entering AI processing block")
         with st.spinner("🔍 Detecting trends using AI..."):
             try:
                 analysis = get_ai_summary(data)

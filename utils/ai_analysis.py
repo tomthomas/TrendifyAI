@@ -3,8 +3,7 @@ import requests
 import pandas as pd
 
 API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-xxl"
-HF_TOKEN = st.secrets["HF_TOKEN"]
-HEADERS = {"Authorization": f"Bearer {HF_TOKEN}"}
+HEADERS = {"Authorization": f"Bearer {os.environ['HF_TOKEN']}"}
 
 def generate_insights(prompt):
     payload = {
