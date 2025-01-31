@@ -7,12 +7,13 @@ HEADERS = {"Authorization": f"Bearer {os.environ['HF_TOKEN']}"}
 
 def validate_prompt_length(prompt):
     avg_token_length = 4  # Conservative estimate
-    max_tokens = 30000  # Leave 2k tokens for response
+    max_tokens = 32000  # Leave room for response
     if len(prompt) / avg_token_length > max_tokens:
-        raise ValueError("Input too large - please upload smaller dataset")
-
+        raise ValueError("Input too large - please upload a smaller dataset or fewer columns")
 
 def generate_insights(prompt):
+    validate_prompt_length(prompt)
+    
     payload = {
         "inputs": prompt,
         "parameters": {
@@ -51,16 +52,12 @@ def get_ai_summary(data):
             top_3 = data[col].value_counts().index[:3]
             top_cats_str += f"{col}: {', '.join(top_3)}\n"
 
-        if num_rows <= 10_000:
-            sample_data = data.to_csv(index=False)
-            sample_size = num_rows
-            text_output = "Using the entire dataset for analysis"
-        else:
-            # For datasets with 10,000+ rows, use just first 10,000 rows
-            sample_data = data.head(10_000).to_csv(index=False)
-            sample_size = 10_000
-            text_output = "Dataset size too large. Using just the first 10,000 rows for analysis."
 
+        sample_size = min(100,num_rows)
+        sample_data = data.head(sample_size).to_csv(index=False)
+
+        text_output = f"Using the first {sample_size} rows for analysis."
+ 
         prompt = f"""
         You are an expert data analyst. Analyze the dataset with columns: {", ".join(data.columns)}.
         {text_output}
