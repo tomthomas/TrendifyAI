@@ -5,13 +5,21 @@ import pandas as pd
 API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
 HEADERS = {"Authorization": f"Bearer {os.environ['HF_TOKEN']}"}
 
+def validate_prompt_length(prompt):
+    avg_token_length = 4  # Conservative estimate
+    max_tokens = 30000  # Leave 2k tokens for response
+    if len(prompt) / avg_token_length > max_tokens:
+        raise ValueError("Input too large - please upload smaller dataset")
+
+
 def generate_insights(prompt):
     payload = {
         "inputs": prompt,
         "parameters": {
             "max_new_tokens": 400,
             "temperature": 0.7,
-            "truncation": True
+            "truncation": True,
+            "return_full_text": False
         }
     }
 
