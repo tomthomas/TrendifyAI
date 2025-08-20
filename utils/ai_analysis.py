@@ -14,7 +14,7 @@ def validate_prompt_length(prompt):
 
 def generate_insights(prompt: str):
     payload = {
-        "model": "mistralai/Mistral-7B-Instruct-v0.2",  # Auto provider selection
+        "model": "deepseek-ai/DeepSeek-R1:fireworks-ai",  # Auto provider selection
         "messages": [
             {"role": "system", "content": "You are a helpful data analysis assistant."},
             {"role": "user", "content": prompt}
