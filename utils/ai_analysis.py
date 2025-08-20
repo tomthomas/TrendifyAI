@@ -2,7 +2,7 @@ import os
 import requests
 import pandas as pd
 
-API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
 HEADERS = {"Authorization": f"Bearer {os.environ['HF_TOKEN']}"}
 
 def validate_prompt_length(prompt):
