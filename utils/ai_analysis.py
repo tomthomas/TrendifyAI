@@ -2,7 +2,7 @@ import os
 import requests
 import pandas as pd
 
-API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
+API_URL = "https://router.huggingface.co/v1/chat/completions"
 HEADERS = {"Authorization": f"Bearer {os.environ['HF_TOKEN']}"}
 
 def validate_prompt_length(prompt):
@@ -12,28 +12,28 @@ def validate_prompt_length(prompt):
         raise ValueError("Input too large - please upload smaller dataset")
 
 
-def generate_insights(prompt):
+def generate_insights(prompt: str):
     payload = {
-        "inputs": prompt,
-        "parameters": {
-            "max_new_tokens": 400,
-            "temperature": 0.7,
-            "truncation": True,
-            "return_full_text": False
-        }
+        "model": "mistralai/Mistral-7B-Instruct-v0.2",  # Auto provider selection
+        "messages": [
+            {"role": "system", "content": "You are a helpful data analysis assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        "max_tokens": 400,
+        "temperature": 0.7
     }
 
-    response = requests.post(API_URL, headers= HEADERS, json= payload)
-    
-    # check if request was succesfull
+    response = requests.post(API_URL, headers=HEADERS, json=payload)
+
     if response.status_code != 200:
         raise ValueError(f"API request failed: {response.text}")
-    
+
     result = response.json()
-    if isinstance(result, list) and "generated_text" in result[0]:
-        return result[0]['generated_text']
-    
-    raise ValueError(f"Unexpected API response: {result}")
+    try:
+        return result["choices"][0]["message"]["content"]
+    except (KeyError, IndexError):
+        raise ValueError(f"Unexpected API response: {result}")
+
 
 # def get_ai_summary(data):
 #     if isinstance(data, pd.DataFrame):
